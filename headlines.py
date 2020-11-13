@@ -1,5 +1,6 @@
 import feedparser
 from flask import Flask
+from flask import render_template
 
 
 app = Flask(__name__)
@@ -23,14 +24,10 @@ def get_news(publication='bbc'):
 
     first_article = feed['entries'][0]
 
-    return '''<html>
-    <body>
-    <h1> BBC Headlines </h1>
-    <b>{0}</b> <br/>
-    <i>{1}</i> <br/>
-    <p>{2}</p> <br/>
-    </body>
-    </html>'''.format(first_article.get('title'), first_article.get('published'), first_article.get('summary'))
+    # pass the entire list off articles from a publication into jinja
+    rendered_page = render_template('home.html', publication=publication.upper(), articles=feed['entries'])
+
+    return rendered_page
 
 
 if __name__ == "__main__":
