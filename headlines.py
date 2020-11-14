@@ -3,8 +3,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 import json
-import requests #need a replacement
-import urllib
+import requests
+import urllib.parse
 
 
 app = Flask(__name__)
@@ -35,13 +35,14 @@ def get_news():
     else:
         publication = query.lower()
     feed = feedparser.parse(RSS_FEEDS[publication])
+    weather = get_weather('London,UK')
 
-    return render_template('home.html', articles=feed['entries'])
+    return render_template('home.html', articles=feed['entries'], weather=weather)
 
 def get_weather(query):
-    query = urllib.quote(query)  # Encode the query for a url
+    query = urllib.parse.quote(query)  # Encode the query for a url
     url = f'http://api.openweathermap.org/data/2.5/weather?q={query}&units=metric&appid=01b39def802d744725886f7476405653'
-    data = request.get(url)
+    data = requests.get(url)
     parsed = data.json()
     weather = None
     if parsed.get('weather'):
