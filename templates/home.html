@@ -3,9 +3,19 @@
     <title>Headlines</title>
   </head>
   <body>
-    <h1>{{ publication }} Headlines</h1>
+    <h1>Headlines</h1>
+    <!-- Creates a GET request when submitted -->
+    <form>
+      <input type="text" name="publication" placeholder="search" />
+      <!-- Passes inputs as GET arguments into the URL -->
+      <!-- name = GET argument -->
+      <!-- placeholder = prepopulate the field-->
+      <input type="submit" value="Submit" />
+      <!-- Submit button that returns any input text to the python backend -->
+    </form>
     {% for article in articles %}
-    <b><a href="{{article.link}}">{{article.title}}</a></b><br />
+    <b><a href="{{article.link}}">{{article.title}}</a></b
+    ><br />
     <i>{{article.published}}</i><br />
     <p>{{article.summary}}\n</p>
     <hr />
