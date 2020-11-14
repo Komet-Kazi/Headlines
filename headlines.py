@@ -1,6 +1,7 @@
 import feedparser
 from flask import Flask
 from flask import render_template
+from flask import request
 
 
 app = Flask(__name__)
@@ -10,24 +11,29 @@ RSS_FEEDS = {
     'bbc': 'http://feeds.bbci.co.uk/news/rss.xml',
     'cnn': 'http://rss.cnn.com/rss/edition.rss',
     'fox': 'http://feeds.foxnews.com/foxnews/latest',
-    'iol': 'http://www.iol.co.za/cmlink/1.640'
-}
+    'iol': 'http://www.iol.co.za/cmlink/1.640'}
 
 # --------------------------------------------------------------------------------------- #
-# pass variables through the url
-@app.route('/')
-@app.route('/<publication>')
-def get_news(publication='bbc'):
-    #TODO catch any invalid value passed via the url
 
+@app.route('/')
+def get_news():
+    '''
+    example url: http://127.0.0.1:5000/?publication=bbc
+    params:
+        publication -> name of rss feed publisher
+        valid values: bbc, cnn, fox, iol
+    returns:
+        If the value is in our RSS_FEEDS dict, we return the matching publication headlines page.
+    '''
+    query = request.args.get('publication')
+
+    if not query or query.lower() not in RSS_FEEDS:
+        publication = 'bbc'
+    else:
+        publication = query.lower()
     feed = feedparser.parse(RSS_FEEDS[publication])
 
-    first_article = feed['entries'][0]
-
-    # pass the entire list off articles from a publication into jinja
-    rendered_page = render_template('home.html', publication=publication.upper(), articles=feed['entries'])
-
-    return rendered_page
+    return render_template('home.html', articles=feed['entries'])
 
 
 if __name__ == "__main__":
