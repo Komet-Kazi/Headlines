@@ -12,8 +12,8 @@ import configparser
 config = configparser.ConfigParser()
 config.read('secrets.ini')
 
-APP_ID = config['OpenWeatherMap']['API_KEY']
-
+OWM_APP_ID = config['OpenWeatherMap']['API_KEY']
+OER_APP_ID = config['OpenExchangeRates']['API_KEY']
 # --------------------------------------------------------------------------------------- #
 # logging configuration
 
@@ -46,7 +46,7 @@ RSS_FEEDS = {
 
 # --------------------------------------------------------------------------------------- #
 
-DEFAULT = {'publication': 'bbc', 'city': 'Tucson,US'}
+DEFAULT = {'publication': 'bbc', 'city': 'Tucson,US', 'currency_from':'USD', 'currency_to':'JOD' }
 
 
 @app.route('/')
@@ -60,14 +60,28 @@ def home():
         publication = DEFAULT['publication']
     articles = get_news(publication)
 
-    # Get customized wather based on user iput or DEFAULT
+    # Get customized weather based on user iput or DEFAULT
     city = request.args.get('city')
     if not city:
         city = DEFAULT['city']
-
     weather = get_weather(city)
 
-    return render_template('home.html', articles=articles, weather=weather)
+    # get customized currency rates via user input or DEFAULT
+    currency_from = request.args.get('currency_from')
+    if not currency_from:
+        currency_from = DEFAULT['currency_from']
+
+    currency_to = request.args.get('currency_to')
+    if not currency_to:
+        currency_to = DEFAULT['currency_to']
+
+    currency = {
+        'rate': get_rate(currency_from, currency_to),
+        'from': currency_from,
+        'to': currency_to
+    }
+
+    return render_template('home.html', articles=articles, weather=weather, currency=currency)
 
 
 def get_news(query):
@@ -100,7 +114,7 @@ def get_weather(query):
         weather --> Dictionary containing city name, temperature, description
     '''
     query = urllib.parse.quote(query)  # Encode the query for a url
-    url = f'http://api.openweathermap.org/data/2.5/weather?q={query}&units=imperial&appid={APP_ID}'
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={query}&units=imperial&appid={OWM_APP_ID}'
 
     data = requests.get(url)
     json_response = data.json()
@@ -117,6 +131,34 @@ def get_weather(query):
         }
 
     return weather
+
+def get_rate(frm, to):
+    '''
+    Request current exchange rate information for the location passed.
+    Params:
+        frm --> Starting Currency Code
+        to -->Ending Currency Code
+        Returns:
+            conversion rate -->
+    '''
+
+    url = f'https://openexchangerates.org//api/latest.json?app_id={OER_APP_ID}'
+
+    response = requests.get(url)
+    all_currency = response.json()
+    rates = all_currency.get('rates')
+
+    logging.debug('json response:\n' + jPrint(rates))
+
+    frm_rate = rates.get(frm.upper())
+    to_rate = rates.get(to.upper())
+
+    currency_exchange = {
+        'frm_rate': frm_rate,
+        'to_rate': to_rate,
+
+    }
+    return to_rate/frm_rate
 
 def jPrint(obj):
     '''
