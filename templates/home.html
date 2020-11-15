@@ -4,25 +4,29 @@
   </head>
   <body>
     <h1>Headlines</h1>
+    <!-- WEATHER -->
     <h2>Current weather</h2>
-    <p>City: <b>{{weather.city}}</b></p>
-    <p>{{weather.description}} |{{weather.temperature}}&#8451;</p>
+    <form>
+      <input type="text" name="city" placeholder="weather search" />
+      <input type="submit" value="Submit" />
+    </form>
+    <p>City: <b>{{ weather.city }}</b></p>
+    <p>{{ weather.description }} |{{ weather.temperature }}&#8457;</p>
+    <!-- END WEATHER -->
     <h2>Headlines</h2>
-    <!-- Creates a GET request when submitted -->
+    <!-- HEADLINES -->
     <form>
       <input type="text" name="publication" placeholder="search" />
       <!-- Passes inputs as GET arguments into the URL -->
       <!-- name = GET argument -->
-      <!-- placeholder = prepopulate the field-->
       <input type="submit" value="Submit" />
-      <!-- Submit button that returns any input text to the python backend -->
     </form>
-    {% for article in articles %}
-    <b><a href="{{article.link}}">{{article.title}}</a></b
+    { % for article in articles % }
+    <b><a href="{{ article.link }}">{{ article.title }}</a></b
     ><br />
-    <i>{{article.published}}</i><br />
-    <p>{{article.summary}}</p>
+    <i>{{ article.published }}</i><br />
+    <p>{{ article.summary }}</p>
     <hr />
-    {% endfor %}
+    { % endfor % }
   </body>
 </html>
