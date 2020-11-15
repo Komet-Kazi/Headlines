@@ -1,0 +1,59 @@
+werkzeug - WARNING -  * Debugger is active!
+werkzeug - INFO -  * Debugger PIN: 343-650-578
+werkzeug - INFO -  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+urllib3.connectionpool - DEBUG - Starting new HTTP connection (1): api.openweathermap.org:80
+urllib3.connectionpool - DEBUG - http://api.openweathermap.org:80 "GET /data/2.5/weather?q=London%2CUK&units=metric&appid=01b39def802d744725886f7476405653 HTTP/1.1" 200 558
+root - DEBUG - {
+    "base": "stations",
+    "clouds": {
+        "all": 90
+    },
+    "cod": 200,
+    "coord": {
+        "lat": 51.51,
+        "lon": -0.13
+    },
+    "dt": 1605404385,
+    "id": 2643743,
+    "main": {
+        "feels_like": 11.44,
+        "humidity": 93,
+        "pressure": 1001,
+        "temp": 13.02,
+        "temp_max": 13.89,
+        "temp_min": 12.78
+    },
+    "name": "London",
+    "rain": {
+        "1h": 1.15
+    },
+    "sys": {
+        "country": "GB",
+        "id": 1414,
+        "sunrise": 1605424756,
+        "sunset": 1605456680,
+        "type": 1
+    },
+    "timezone": 0,
+    "visibility": 4000,
+    "weather": [
+        {
+            "description": "moderate rain",
+            "icon": "10n",
+            "id": 501,
+            "main": "Rain"
+        },
+        {
+            "description": "light intensity drizzle",
+            "icon": "09n",
+            "id": 300,
+            "main": "Drizzle"
+        }
+    ],
+    "wind": {
+        "deg": 200,
+        "speed": 3.1
+    }
+}
+werkzeug - INFO - 127.0.0.1 - - [14/Nov/2020 18:41:11] "[37mGET / HTTP/1.1[0m" 200 -
+werkzeug - INFO -  * Detected change in 'c:\\Users\\slothy\\headlines\\headlines.py', reloading
