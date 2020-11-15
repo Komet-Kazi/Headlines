@@ -46,8 +46,31 @@ RSS_FEEDS = {
 
 # --------------------------------------------------------------------------------------- #
 
+DEFAULT = {'publication': 'bbc', 'city': 'Tucson,US'}
+
+
 @app.route('/')
-def get_news():
+def home():
+    '''
+
+    '''
+    # Get customized headlines based  on user input or DEFAULT
+    publication = request.args.get('publication')
+    if not publication:
+        publication = DEFAULT['publication']
+    articles = get_news(publication)
+
+    # Get customized wather based on user iput or DEFAULT
+    city = request.args.get('city')
+    if not city:
+        city = DEFAULT['city']
+
+    weather = get_weather(city)
+
+    return render_template('home.html', articles=articles, weather=weather)
+
+
+def get_news(query):
     '''
     example url: http://127.0.0.1:5000/?publication=bbc
     params:
@@ -57,15 +80,14 @@ def get_news():
         If the value is in our RSS_FEEDS dict, we return the matching publication headlines page.
     '''
     query = request.args.get('publication')
-
     if not query or query.lower() not in RSS_FEEDS:
-        publication = 'bbc'
+        publication = DEFAULT['publication']
     else:
         publication = query.lower()
-    feed = feedparser.parse(RSS_FEEDS[publication])
-    weather = get_weather('London,UK')
 
-    return render_template('home.html', articles=feed['entries'], weather=weather)
+    feed = feedparser.parse(RSS_FEEDS[publication])
+
+    return feed['entries']
 
 def get_weather(query):
     '''
@@ -77,7 +99,6 @@ def get_weather(query):
         Returns:
         weather --> Dictionary containing city name, temperature, description
     '''
-    query = request.args.get('city')
     query = urllib.parse.quote(query)  # Encode the query for a url
     url = f'http://api.openweathermap.org/data/2.5/weather?q={query}&units=imperial&appid={APP_ID}'
 
