@@ -75,13 +75,13 @@ def home():
     if not currency_to:
         currency_to = DEFAULT['currency_to']
 
-    currency = {
-        'rate': get_rate(currency_from, currency_to),
+    rate, currencies = get_rate(currency_from, currency_to)
+    currency_exchange = {
+        'rate': rate,
         'from': currency_from,
         'to': currency_to
     }
-
-    return render_template('home.html', articles=articles, weather=weather, currency=currency)
+    return render_template('home.html', articles=articles, weather=weather, currency_exchange=currency_exchange, currencies=currencies)
 
 
 def get_news(query):
@@ -153,12 +153,7 @@ def get_rate(frm, to):
     frm_rate = rates.get(frm.upper())
     to_rate = rates.get(to.upper())
 
-    currency_exchange = {
-        'frm_rate': frm_rate,
-        'to_rate': to_rate,
-
-    }
-    return to_rate/frm_rate
+    return (to_rate/frm_rate, rates.keys())
 
 def jPrint(obj):
     '''
